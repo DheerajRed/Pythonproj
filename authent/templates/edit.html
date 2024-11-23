@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .title-login-section {
+        display: flex;
+        background-color: black;
+        border-radius: 10px;
+        color: white;
+        justify-content: space-between;
+    }
+
+    .title-login-section .title {
+        margin-left: 10px;
+    }
+
+    .body{
+        text-align: center;
+    }
+    .body form{
+        margin: 20px 20px;
+    }
+    
+    .body form input{
+        width: 500px;
+        height: 40px;
+        border: 2px solid black;
+        margin: 5px 5px;
+    }
+    .body form textarea{
+        width: 500px;
+        height: 100px;
+        border: 2px solid black;
+        margin: 5px 5px;
+    }
+    #submitform{
+        background-color: rgb(69, 69, 139);
+        border-radius: 10px;
+        color: white;
+        font-weight: 100;
+        width: 400px;
+    }
+    
+    #cancelform{
+        background-color: rgb(135, 196, 107);
+        border-radius: 10px;
+        color: white;
+        font-weight: 100;
+        width: 400px;
+        height: 40px;
+    }
+    #cancelform a{
+        text-decoration: none;
+        color: white;
+    }
+</style>
+<body>
+    <header>
+        <div class="title-login-section">
+            <div class="title">
+                <h1>Task Manager</h1>
+            </div>
+           
+        </div>
+    </header>
+    <div class="body">
+        <form method="POST" >
+            {% csrf_token %}
+            <label for="title">Title</label><br>
+            <input type="text" class="title" name="titletext" id="task-title">
+            <br>
+            <br>
+            <label for="description">Description</label><br>
+            <textarea class="description" name="descriptiontext" id="task-description"></textarea>
+            <br>
+            <input type="submit" id="submitform"><br><br>
+            <button id="cancelform"><a href="{% url 'home' %}">Cancel</a></button>
+        </form>
+    </div>
+    
+</body>
+</html>

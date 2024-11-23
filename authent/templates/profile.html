@@ -1,0 +1,143 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .title-login-section {
+            display: flex;
+            background-color: black;
+            border-radius: 10px;
+            color: white;
+            justify-content: space-between;
+        }
+
+        .title-login-section .title {
+            margin-left: 10px;
+        }
+
+        .Account {
+            display: flex;
+            margin: 10px 10px;
+        }
+
+        .Account button {
+            margin: 10px 10px;
+            background: none;
+            color: white;
+            border-radius: 10px;
+        }
+        .Account button a{
+            text-decoration: none;
+            color: white;
+        }
+        .profilepicture{
+            text-align: center;
+            border: 1px solid grey;
+            border-radius: 50%;
+            padding: 20px 20px;
+            margin: 10px 10px;
+        }
+        .profile-details{
+            text-align: start;
+            border: 1px solid grey;
+            border-radius: 10px;
+            box-shadow: 10px 10px 5px black;
+            margin: 10px 10px;
+        }
+        .profile-details p{
+            margin: 10px 10px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+       .profilepicture i{
+         font-size: 100px;
+         margin: 5px 5px;
+         
+       }
+       .userdetails{
+        margin: 10px 10px ;
+        border: 1px solid black;
+        border-radius: 10px;
+        padding: 20px 20px;
+        max-width: 600px;
+        display: flex;
+        height: auto;
+        box-shadow: 10px 10px 5px rgb(142, 114, 168);
+       }
+       .content{
+        margin: 20px 20px;
+       }
+       .content button{
+        background: none;
+        background-color: blue;
+        border-radius: 5px;
+        color: white;
+        font-size: 20px;
+       }
+       .content input{
+        height: 30px;
+        width: 500px;
+       }
+      
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="title-login-section">
+            <div class="title">
+                <h1>Task Manager</h1>
+            </div>
+            <div class="Account">
+                {% if user.is_authenticated %}
+                <button class="create" id="createtask">Create task</button>
+                <button><a href="{% url 'account_logout' %}">Logout</a></button>
+                <button>{{user.username}}</button>
+
+                {% else %}
+                <button><a href="{% provider_login_url 'google' %}">Login</a></button>
+
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <div class="body-section">
+        <div class="userdetails">
+            <div class="profilepicture">
+                <i class="fa-regular fa-user"></i>
+            </div>
+            <div class="profile-details">
+                <p> <i class="fa-sharp fa-thin fa-file-signature"></i> Name : <strong>{{user.username}}</strong></p>
+                <p> <i class="fa-regular fa-envelope"></i> Email : <strong>{{user.email}}</strong></p>
+                <p><i class="fa-duotone fa-thin fa-cake-candles"></i> DOB : </p>
+                <p><i class="fa-regular fa-phone"></i> Phone : </p>
+            </div>
+        </div>
+        <div class="content">
+            <form action="{% url 'invite_user' %}" method="POST">
+                {% csrf_token %}
+                <input type="email" placeholder="Enter the mail you want to invite" name="email" id="email">
+                <button>Invite</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        let submit = document.getElementById('submitform')
+        let createtask = document.getElementById('createtask')
+
+        createtask.addEventListener('click', function openform(){
+            document.getElementById('task-form').style.display="block"
+            document.getElementById('tasks').style.display = "none"
+        })
+        submit.addEventListener('click', function closeform(){
+            document.getElementById('task-form').style.display="none"
+            document.getElementById('tasks').style.display = "block"
+
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,279 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    
+    .title-login-section {
+            display: flex;
+            background-color: black;
+            border-radius: 10px;
+            color: white;
+            justify-content: space-between;
+        }
+
+        .title-login-section .title {
+            margin-left: 10px;
+        }
+
+        .Account {
+            display: flex;
+            margin: 10px 10px;
+        }
+
+        .Account button {
+            margin: 10px 10px;
+            background: none;
+            color: white;
+            border-radius: 10px;
+        }
+
+        #profilebutton {
+            margin: 10px 10px;
+            background: none;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .Account button a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .content {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .task {
+            border: 1px solid black;
+            border-radius: 10px;
+            box-shadow: 10px 10px 5px black;
+            width: 300px;
+            height: 300px;
+            margin: 10px 10px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            overflow: hidden;
+            overflow-y: auto;
+            max-height: 240px;
+            
+        } 
+        .task div i{
+            margin: 10px 10px;
+        }
+
+        .taskform {
+            border: 1px solid black;
+            max-width: auto;
+            margin: 50px 50px;
+            text-align: center;
+            display: none;
+        }
+        .taskform form{
+            margin: 20px 10px;
+        }
+        .taskform form label{
+            font-size: 40px;
+        }
+        .taskform form input{
+            width: 500px;
+            height: 40px;
+            border: 2px solid black;
+        }
+        .taskform form textarea{
+            width: 500px;
+            height: 100px;
+            border: 2px solid black;
+        }
+        #submitform{
+            background-color: rgb(69, 69, 139);
+            border-radius: 10px;
+            color: white;
+            font-weight: 100;
+        }
+        .task-details{
+            text-align: center;
+            margin: 20px 20px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .edit-delete-icon{
+            margin: 10px 10px;
+            height: fit-content;
+            
+        }
+        .edit-delete-icon button{
+            background: none;
+            border: none;
+        }
+        .edit-delete-form a{
+            text-decoration: none;
+            color: black;
+        }
+        .edit-delete-form {
+            display: none;
+            border: 1px solid grey;
+            padding: 10px 10px;
+            background-color: gainsboro;
+        }
+        .cancel-edit{
+            display: none;
+        }
+    
+</style>
+<body>
+    <header>
+        <div class="title-login-section">
+            <div class="title">
+                <h1>Task Manager</h1>
+            </div>
+            <div class="Account">
+                {% if user.is_authenticated %}
+                <button class="create" id="createtask">Create task</button>
+                <button><a href="{% url 'account_logout' %}">Logout</a></button>
+
+                <button id="profilebutton"><a href="{% url 'profilepage' %}">{{user.username}}</a></button>
+
+                {% else %}
+
+                <button><a href="{% provider_login_url 'google' %}">Login</a></button>
+
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <div class="body-section">
+
+        <div class="taskform" id="task-form">
+            <form method="POST" action="{% url 'home' %}">
+                {% csrf_token %}
+                <label for="title">Title</label><br>
+                <input type="text" class="title" name="titletext" id="task-title">
+                <br>
+                <br>
+                <label for="description">Description</label><br>
+                <textarea class="description" name="descriptiontext" id="task-description"></textarea>
+                <br>
+                <input type="submit" id="submitform">
+            </form>
+        </div>
+
+        <div class="content" id="tasks">
+
+            {% if user.is_authenticated %}
+            {% for i in tasks %}
+            <div class="task">
+                <div class="task-details">
+                    <p></p>
+                    <h2 class="task-title">{{i.Title}}</h2>
+                    <p class="task-description">{{i.Description}}</p>
+                    
+                </div>
+                <div class="edit-delete-icon">
+                    <button class="task-icon" id="task-icon-id"><i class="fa-solid fa-ellipsis-vertical" ></i></button>
+                    <button class="cancel-edit" id="cancel-edit-id"><i class="fa-solid fa-xmark" ></i></button>
+                    <form action="" class="edit-delete-form" id="edit-delete">
+                        <button><a href="{% url 'delete' i.id %}">Delete</a></button><br><br>
+                        <button><a href="{% url 'edit' i.id %}">Edit</a></button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <h1>Please login to create tasks</h1>
+
+            {% endif %}
+
+
+        </div>
+    </div>
+    <script>
+        /*let taskicon = document.querySelectorAll('.task-icon')
+        let submit = document.getElementById('submitform')
+        let createtask = document.getElementById('createtask')
+        let canceledit = document.querySelectorAll('.cancel-edit')
+        let editdeleteform = document.querySelector('.edit-delete-form')
+        createtask.addEventListener('click', function openform() {
+            document.getElementById('task-form').style.display = "block"
+            document.getElementById('tasks').style.display = "none"
+        })
+        submit.addEventListener('click', function closeform() {
+            document.getElementById('task-form').style.display = "none"
+            document.getElementById('tasks').style.display = "block"
+
+        })
+       /* taskicon.addEventListener('click', function(){
+            document.getElementById('edit-delete' ).style.display="block"
+            canceledit.style.display="block"
+            taskicon.style.display="none"
+        })
+
+        canceledit.addEventListener('click', function(){
+            document.getElementById('edit-delete').style.display="none"
+            canceledit.style.display="none"
+            taskicon.style.display="block"
+        })
+        taskicon.forEach(taskicons=>{
+            taskicons.addEventListener('click', ()=>{
+               editdeleteform.style.display[Index]="block"
+                document.getElementById('cancel-edit-id').style.display="block"
+                document.getElementById('task-icon-id').style.display="none"
+            })
+        })
+
+        canceledit.forEach(cancel=>{
+            cancel.addEventListener('click', ()=>{
+            editdeleteform.style.display="none"
+            document.getElementById('cancel-edit-id').style.display="none"
+            document.getElementById('task-icon-id').style.display="block"
+            })
+        })*/
+
+    let taskicon = document.querySelectorAll('.task-icon');
+    let submit = document.getElementById('submitform');
+    let createtask = document.getElementById('createtask');
+    let canceledit = document.querySelectorAll('.cancel-edit');
+    let editdeleteforms = document.querySelectorAll('.edit-delete-form');
+
+    createtask.addEventListener('click', function openform() {
+        document.getElementById('task-form').style.display = "block";
+        document.getElementById('tasks').style.display = "none";
+    });
+
+    submit.addEventListener('click', function closeform() {
+        document.getElementById('task-form').style.display = "none";
+        document.getElementById('tasks').style.display = "block";
+    });
+
+    taskicon.forEach((taskicons, index) => {
+        taskicons.addEventListener('click', () => {
+            editdeleteforms[index].style.display = "block";
+            canceledit[index].style.display = "block";
+            taskicons.style.display = "none";
+        });
+    });
+
+    canceledit.forEach((cancel, index) => {
+        cancel.addEventListener('click', () => {
+            editdeleteforms[index].style.display = "none";
+            cancel.style.display = "none";
+            taskicon[index].style.display = "block";
+        });
+    });
+
+
+
+    </script>
+</body>
+
+</html>
